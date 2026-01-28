@@ -1,5 +1,5 @@
-import type { ApiResult } from '@/shared/api/api-result';
-import { weatherApi } from '@/shared/api/base';
+import type { ApiResult } from '@shared/api';
+import { weatherApi } from '@shared/api';
 import { type Weather, weatherSchema } from '../model';
 
 export const getCurrentWeather = async (
@@ -7,7 +7,7 @@ export const getCurrentWeather = async (
   lon: number,
 ): Promise<ApiResult<Weather>> => {
   try {
-    const { data: rawData } = await weatherApi.get('/data/2.5/weather', {
+    const { data: rawData } = await weatherApi.get('/weather', {
       params: {
         lat,
         lon,

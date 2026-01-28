@@ -1,12 +1,12 @@
-import type { ApiResult } from '@/shared/api/api-result';
-import { geoApi } from '@/shared/api/base';
+import type { ApiResult } from '@shared/api';
+import { geoApi } from '@shared/api';
 import { coordsSchema, type Coords } from '../model';
 
 export const getCoordsByLocation = async (
   locationName: string,
 ): Promise<ApiResult<Coords>> => {
   try {
-    const { data: rawData } = await geoApi.get('/geo/1.0/direct', {
+    const { data: rawData } = await geoApi.get('/direct', {
       params: {
         q: locationName,
         limit: 1,
