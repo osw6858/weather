@@ -1,4 +1,4 @@
-import DetailPage from '@/pages/detail';
+import { DetailPage } from '@pages/detail';
 import { HomePage } from '@/pages/home';
 import { Route, Routes } from 'react-router-dom';
 

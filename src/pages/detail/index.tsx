@@ -1,7 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
 import { Button } from '@/shared/ui/button';
 
-export default function DetailPage() {
+export const DetailPage = () => {
   const { id } = useParams();
 
   return (
@@ -15,4 +15,4 @@ export default function DetailPage() {
       </Link>
     </div>
   );
-}
+};
