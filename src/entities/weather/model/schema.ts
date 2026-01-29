@@ -37,6 +37,63 @@ export const weatherSchema = z.object({
   dt: z.number(),
 });
 
+const forecastItemSchema = z.object({
+  dt: z.number(),
+  main: z.object({
+    temp: z.number(),
+    feels_like: z.number(),
+    temp_min: z.number(),
+    temp_max: z.number(),
+    pressure: z.number(),
+    sea_level: z.number(),
+    grnd_level: z.number(),
+    humidity: z.number(),
+    temp_kf: z.number(),
+  }),
+  weather: z.array(
+    z.object({
+      id: z.number(),
+      main: z.string(),
+      description: z.string(),
+      icon: z.string(),
+    }),
+  ),
+  clouds: z.object({
+    all: z.number(),
+  }),
+  wind: z.object({
+    speed: z.number(),
+    deg: z.number(),
+    gust: z.number(),
+  }),
+  visibility: z.number(),
+  pop: z.number(),
+  sys: z.object({
+    pod: z.string(),
+  }),
+  dt_txt: z.string(),
+});
+
+export const weatherForecastSchema = z.object({
+  cod: z.string(),
+  message: z.number(),
+  cnt: z.number(),
+  list: z.array(forecastItemSchema),
+  city: z.object({
+    id: z.number(),
+    name: z.string(),
+    coord: z.object({
+      lat: z.number(),
+      lon: z.number(),
+    }),
+    country: z.string(),
+    population: z.number(),
+    timezone: z.number(),
+    sunrise: z.number(),
+    sunset: z.number(),
+  }),
+});
+
 const KakaoAddressSchema = z.object({
   address_name: z.string(),
   region_1depth_name: z.string(),
@@ -77,6 +134,7 @@ export const KakaoCoord2AddressResponseSchema = z.object({
 
 export type Coords = z.infer<typeof coordsSchema>;
 export type Weather = z.infer<typeof weatherSchema>;
+export type WeatherForecast = z.infer<typeof weatherForecastSchema>;
 export type KakaoCoord2AddressResult = z.infer<
   typeof KakaoCoord2AddressResponseSchema
 >;

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getCurrentLocation } from '../api/get-current-location';
+import { getCurrentLocation } from '../api';
 
 export const useCurrentLocation = (lat: number, lon: number) => {
   return useQuery({
