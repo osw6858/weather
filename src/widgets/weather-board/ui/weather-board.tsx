@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useCurrentWeatherQuery, WeatherCard } from '@entities/weather';
+import { useGeolocation } from '@/shared/lib/useGeolocation';
 
 // 나중에 만들 feature를 위한 자리
 // import { SearchLocation } from '@/features/search-location';
@@ -12,6 +13,14 @@ export const WeatherBoard = () => {
     coords.lon,
   );
 
+  const { location } = useGeolocation();
+
+  useEffect(() => {
+    if (location) {
+      setCoords(location);
+    }
+  }, [location]);
+
   return (
     <div className="flex w-full flex-col items-center gap-8">
       <div className="w-full max-w-sm">
@@ -20,7 +29,6 @@ export const WeatherBoard = () => {
         </div>
       </div>
 
-      {/* 2. 날씨 정보 엔티티 */}
       <div className="flex w-full justify-center">
         {isLoading && (
           <div className="h-80 w-64 animate-pulse rounded-3xl bg-white/20" />
