@@ -7,12 +7,7 @@ const COMMON_CONFIG = {
 
 export const weatherApi = axios.create({
   ...COMMON_CONFIG,
-  baseURL: 'https://api.openweathermap.org/data/2.5',
-});
-
-export const geoApi = axios.create({
-  ...COMMON_CONFIG,
-  baseURL: 'https://api.openweathermap.org/geo/1.0',
+  baseURL: 'https://api.open-meteo.com/v1',
 });
 
 export const kakaoApi = axios.create({
