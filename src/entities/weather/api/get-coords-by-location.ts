@@ -1,5 +1,5 @@
-import type { ApiResult } from '@shared/api';
-import { geoApi } from '@shared/api';
+import type { ApiResult } from '@/shared/api';
+import { geoApi } from '@/shared/api';
 import { coordsSchema, type Coords } from '../model';
 
 export const getCoordsByLocation = async (

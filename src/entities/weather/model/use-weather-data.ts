@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useGeolocation } from '@/shared/lib/useGeolocation';
+import { useGeolocation } from '../lib/use-geolocation';
 import { useCurrentWeatherQuery } from './use-current-weather-query';
 import { useWeatherForecastQuery } from './use-weather-forcast-query';
 import { useCurrentLocation } from './use-current-location';

@@ -1,5 +1,5 @@
-import type { ApiResult } from '@shared/api';
-import { weatherApi } from '@shared/api';
+import type { ApiResult } from '@/shared/api';
+import { weatherApi } from '@/shared/api';
 import { type Weather, weatherSchema } from '../model';
 
 export const getCurrentWeather = async (
