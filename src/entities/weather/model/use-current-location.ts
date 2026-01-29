@@ -1,11 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import { getCurrentLocation } from '../api';
 
-export const useCurrentLocation = (lat: number, lon: number) => {
+export const useCurrentLocation = (lat?: number, lon?: number) => {
   return useQuery({
     queryKey: ['currentLocation', lat, lon],
     queryFn: async () => {
-      const res = await getCurrentLocation(lat, lon);
+      const res = await getCurrentLocation(lat!, lon!);
 
       if (res.status === 'error') {
         throw new Error(res.error);

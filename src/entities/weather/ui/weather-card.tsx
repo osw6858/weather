@@ -2,6 +2,8 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import type { Weather, WeatherForecast } from '../model';
+import type { HTMLAttributes } from 'react';
+import { cn } from '@/shared/lib';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -17,7 +19,12 @@ interface WeatherCardProps {
   forecast?: ForecastData;
 }
 
-export const WeatherCard = ({ data, forecast }: WeatherCardProps) => {
+export const WeatherCard = ({
+  data,
+  forecast,
+  className,
+  ...props
+}: WeatherCardProps & HTMLAttributes<HTMLDivElement>) => {
   const { main, weather, name } = data;
   const currentTemp = Math.round(main.temp);
   const description = weather[0].description;
@@ -29,7 +36,13 @@ export const WeatherCard = ({ data, forecast }: WeatherCardProps) => {
   const todayForecasts = forecast?.todayForecasts || [];
 
   return (
-    <div className="flex w-full max-w-2xl flex-col gap-6 rounded-3xl bg-white p-8 shadow-xl">
+    <div
+      className={cn(
+        'flex w-full max-w-2xl flex-col gap-6 rounded-3xl bg-white p-8 shadow-xl',
+        className,
+      )}
+      {...props}
+    >
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-3xl font-bold text-gray-800">{name}</h2>

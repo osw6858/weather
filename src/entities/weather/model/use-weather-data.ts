@@ -10,30 +10,35 @@ const DEFAULT_COORDS = {
 };
 
 export const useWeatherData = () => {
-  const [currentCoords, setCurrentCoords] = useState(DEFAULT_COORDS);
+  const [currentCoords, setCurrentCoords] = useState<{
+    lat: number;
+    lon: number;
+  } | null>(null);
 
   const { coords: geoCoords, error: geoError } = useGeolocation();
-
-  const weatherQuery = useCurrentWeatherQuery(
-    currentCoords.lat,
-    currentCoords.lon,
-  );
-
-  const forecastQuery = useWeatherForecastQuery(
-    currentCoords.lat,
-    currentCoords.lon,
-  );
-
-  const locationQuery = useCurrentLocation(
-    currentCoords.lat,
-    currentCoords.lon,
-  );
 
   useEffect(() => {
     if (geoCoords) {
       setCurrentCoords(geoCoords);
+    } else if (geoError) {
+      setCurrentCoords(DEFAULT_COORDS);
     }
-  }, [geoCoords]);
+  }, [geoCoords, geoError]);
+
+  const weatherQuery = useCurrentWeatherQuery(
+    currentCoords?.lat,
+    currentCoords?.lon,
+  );
+
+  const forecastQuery = useWeatherForecastQuery(
+    currentCoords?.lat,
+    currentCoords?.lon,
+  );
+
+  const locationQuery = useCurrentLocation(
+    currentCoords?.lat,
+    currentCoords?.lon,
+  );
 
   return {
     coords: currentCoords,
