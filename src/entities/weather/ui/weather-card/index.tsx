@@ -3,23 +3,32 @@ import { WeatherHeader } from './weather-header';
 import { CurrentTemperature } from './current-temperature';
 import { WeatherDetails } from './weather-details';
 import { HourlyForecast } from './hourly-forecast';
+import { getWeatherInfo } from '../../model/schema';
 import type { WeatherCardProps } from './types';
 import type { HTMLAttributes } from 'react';
+
+export interface WeatherCardComponentProps {
+  maxForecastItems?: number;
+}
 
 export const WeatherCard = ({
   data,
   forecast,
   className,
+  maxForecastItems = 6,
   ...props
-}: WeatherCardProps & HTMLAttributes<HTMLDivElement>) => {
-  const { main, weather, name } = data;
-  const currentTemp = Math.round(main.temp);
-  const description = weather[0].description;
-  const iconCode = weather[0].icon;
-  const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+}: WeatherCardProps &
+  WeatherCardComponentProps &
+  HTMLAttributes<HTMLDivElement>) => {
+  const { current } = data;
+  const currentTemp = Math.round(current.temperature_2m);
+  const weatherInfo = getWeatherInfo(current.weather_code);
+  const description = weatherInfo.description;
+  const iconUrl = `https://openweathermap.org/img/wn/${weatherInfo.icon}@2x.png`;
+  const name = data.name;
 
-  const minTemp = forecast?.minTemp ?? Math.round(main.temp_min);
-  const maxTemp = forecast?.maxTemp ?? Math.round(main.temp_max);
+  const minTemp = forecast?.minTemp ?? currentTemp;
+  const maxTemp = forecast?.maxTemp ?? currentTemp;
   const todayForecasts = forecast?.todayForecasts || [];
 
   return (
@@ -37,11 +46,11 @@ export const WeatherCard = ({
         maxTemp={maxTemp}
       />
       <WeatherDetails
-        humidity={main.humidity}
-        feelsLike={Math.round(main.feels_like)}
-        windSpeed={data.wind.speed}
+        humidity={current.relative_humidity_2m}
+        feelsLike={Math.round(current.apparent_temperature)}
+        windSpeed={current.wind_speed_10m}
       />
-      <HourlyForecast forecasts={todayForecasts} />
+      <HourlyForecast forecasts={todayForecasts} maxItems={maxForecastItems} />
     </div>
   );
 };

@@ -1,11 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
-import { getAddressByCoords } from '../api/get-address-by-coords';
+import { getCoordsByAddress } from '../api/get-coords-by-address';
 
-export const useAddressQuery = (lat?: number, lon?: number) => {
+export const useCoordsByAddressQuery = (address: string) => {
   return useQuery({
-    queryKey: ['address', lat, lon],
+    queryKey: ['coordsByAddress', address],
     queryFn: async () => {
-      const res = await getAddressByCoords(lat!, lon!);
+      const res = await getCoordsByAddress(address);
 
       if (res.status === 'error') {
         throw new Error(res.error);
@@ -13,7 +13,7 @@ export const useAddressQuery = (lat?: number, lon?: number) => {
 
       return res.data;
     },
-    enabled: !!lat && !!lon,
+    enabled: !!address,
     staleTime: 1000 * 60 * 60 * 24,
   });
 };

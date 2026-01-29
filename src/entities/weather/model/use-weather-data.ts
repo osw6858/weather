@@ -9,14 +9,22 @@ const DEFAULT_COORDS = {
   lon: 126.978,
 };
 
-export const useWeatherData = () => {
+interface UseWeatherDataParams {
+  lat?: number;
+  lon?: number;
+}
+
+export const useWeatherData = (params?: UseWeatherDataParams) => {
   const { coords: geoCoords, error: geoError } = useGeolocation();
 
   const currentCoords = useMemo(() => {
+    if (params?.lat && params?.lon) {
+      return { lat: params.lat, lon: params.lon };
+    }
     if (geoCoords) return geoCoords;
     if (geoError) return DEFAULT_COORDS;
     return null;
-  }, [geoCoords, geoError]);
+  }, [params, geoCoords, geoError]);
 
   const weatherQuery = useCurrentWeatherQuery(
     currentCoords?.lat,
@@ -33,32 +41,6 @@ export const useWeatherData = () => {
     currentCoords?.lon,
   );
 
-  // 알 수 있는 최대 범위의 최저/최고 계산
-  const adjustedForecast = useMemo(() => {
-    if (!forecastQuery.data || !weatherQuery.data) {
-      return forecastQuery.data;
-    }
-
-    const currentTemp = Math.round(weatherQuery.data.main.temp);
-    const weatherMinTemp = Math.round(weatherQuery.data.main.temp_min);
-    const weatherMaxTemp = Math.round(weatherQuery.data.main.temp_max);
-    const { minTemp: forecastMin, maxTemp: forecastMax } = forecastQuery.data;
-
-    // 모든 온도를 고려하여 최대 범위 계산
-    const temps = [currentTemp, weatherMinTemp, weatherMaxTemp];
-    if (forecastMin !== null) temps.push(forecastMin);
-    if (forecastMax !== null) temps.push(forecastMax);
-
-    const actualMin = Math.min(...temps);
-    const actualMax = Math.max(...temps);
-
-    return {
-      ...forecastQuery.data,
-      minTemp: actualMin,
-      maxTemp: actualMax,
-    };
-  }, [forecastQuery.data, weatherQuery.data]);
-
   return {
     coords: currentCoords,
     weather: {
@@ -68,7 +50,7 @@ export const useWeatherData = () => {
       error: weatherQuery.error,
     },
     forecast: {
-      data: adjustedForecast,
+      data: forecastQuery.data,
       isLoading: forecastQuery.isLoading,
       isError: forecastQuery.isError,
     },

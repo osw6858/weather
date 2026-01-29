@@ -1,12 +1,12 @@
-import type { Weather, WeatherForecast } from '../../model';
+import type { Weather, HourForecast } from '../../model';
 
 export interface ForecastData {
-  todayForecasts: WeatherForecast['list'];
+  todayForecasts: HourForecast[];
   minTemp: number | null;
   maxTemp: number | null;
 }
 
 export interface WeatherCardProps {
-  data: Weather;
+  data: Weather & { name: string };
   forecast?: ForecastData;
 }

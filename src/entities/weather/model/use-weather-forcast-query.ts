@@ -1,9 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
 import { getWeatherForecast } from '../api/get-weather-forecast';
-
-dayjs.extend(utc);
+import type { HourForecast } from './schema';
 
 export const useWeatherForecastQuery = (lat?: number, lon?: number) => {
   return useQuery({
@@ -15,21 +13,27 @@ export const useWeatherForecastQuery = (lat?: number, lon?: number) => {
         throw new Error(res.error);
       }
 
-      const todayDateString = dayjs.utc().format('YYYY-MM-DD');
+      const now = dayjs();
 
-      const todayForecasts = res.data.list
-        .filter((item) => {
-          const forecastDate = dayjs.unix(item.dt).utc().format('YYYY-MM-DD');
-          return forecastDate === todayDateString;
-        })
-        .slice(0, 4);
+      const minTemp = Math.round(res.data.daily.temperature_2m_min[0]);
+      const maxTemp = Math.round(res.data.daily.temperature_2m_max[0]);
 
-      const todayTemps = todayForecasts.map((f) => f.main.temp);
+      const hourlyTimes = res.data.hourly.time;
+      const hourlyTemps = res.data.hourly.temperature_2m;
+      const hourlyWeatherCodes = res.data.hourly.weather_code;
+      const hourlyHumidity = res.data.hourly.relative_humidity_2m;
+      const hourlyWindSpeed = res.data.hourly.wind_speed_10m;
 
-      const minTemp =
-        todayTemps.length > 0 ? Math.round(Math.min(...todayTemps)) : null;
-      const maxTemp =
-        todayTemps.length > 0 ? Math.round(Math.max(...todayTemps)) : null;
+      const todayForecasts: HourForecast[] = hourlyTimes
+        .map((time, index) => ({
+          time,
+          temp_c: hourlyTemps[index],
+          weather_code: hourlyWeatherCodes[index],
+          humidity: hourlyHumidity?.[index],
+          wind_speed: hourlyWindSpeed?.[index],
+        }))
+        .filter((item) => dayjs(item.time).isAfter(now))
+        .slice(0, 8);
 
       return {
         todayForecasts,
