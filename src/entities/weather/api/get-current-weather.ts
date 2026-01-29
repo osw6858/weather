@@ -31,7 +31,7 @@ export const getCurrentWeather = async (
   } catch (err) {
     return {
       status: 'error',
-      error: '날씨 정보를 가져오는 중 오류가 발생했습니다.',
+      error: `날씨 정보를 가져오는 중 오류가 발생했습니다. ${err}`,
     };
   }
 };

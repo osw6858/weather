@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { useGeolocation } from '@/shared/lib/useGeolocation';
 import { useCurrentWeatherQuery } from './use-current-weather-query';
 import { useWeatherForecastQuery } from './use-weather-forcast-query';
@@ -10,19 +10,12 @@ const DEFAULT_COORDS = {
 };
 
 export const useWeatherData = () => {
-  const [currentCoords, setCurrentCoords] = useState<{
-    lat: number;
-    lon: number;
-  } | null>(null);
-
   const { coords: geoCoords, error: geoError } = useGeolocation();
 
-  useEffect(() => {
-    if (geoCoords) {
-      setCurrentCoords(geoCoords);
-    } else if (geoError) {
-      setCurrentCoords(DEFAULT_COORDS);
-    }
+  const currentCoords = useMemo(() => {
+    if (geoCoords) return geoCoords;
+    if (geoError) return DEFAULT_COORDS;
+    return null;
   }, [geoCoords, geoError]);
 
   const weatherQuery = useCurrentWeatherQuery(
@@ -40,6 +33,27 @@ export const useWeatherData = () => {
     currentCoords?.lon,
   );
 
+  // 현재 온도를 포함한 최저/최고 재계산
+  const adjustedForecast = useMemo(() => {
+    if (!forecastQuery.data || !weatherQuery.data) {
+      return forecastQuery.data;
+    }
+
+    const currentTemp = Math.round(weatherQuery.data.main.temp);
+    const { minTemp, maxTemp } = forecastQuery.data;
+
+    const actualMin =
+      minTemp !== null ? Math.min(minTemp, currentTemp) : currentTemp;
+    const actualMax =
+      maxTemp !== null ? Math.max(maxTemp, currentTemp) : currentTemp;
+
+    return {
+      ...forecastQuery.data,
+      minTemp: actualMin,
+      maxTemp: actualMax,
+    };
+  }, [forecastQuery.data, weatherQuery.data]);
+
   return {
     coords: currentCoords,
     weather: {
@@ -49,7 +63,7 @@ export const useWeatherData = () => {
       error: weatherQuery.error,
     },
     forecast: {
-      data: forecastQuery.data,
+      data: adjustedForecast,
       isLoading: forecastQuery.isLoading,
       isError: forecastQuery.isError,
     },

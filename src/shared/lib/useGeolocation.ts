@@ -10,6 +10,7 @@ export const useGeolocation = () => {
 
   useEffect(() => {
     if (!navigator.geolocation) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setError('지원하지 않는 브라우저');
       return;
     }

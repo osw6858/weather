@@ -29,6 +29,9 @@ export const getCoordsByLocation = async (
 
     return { status: 'success', data: result.data };
   } catch (err) {
-    return { status: 'error', error: '네트워크 통신 중 오류가 발생했습니다.' };
+    return {
+      status: 'error',
+      error: `네트워크 통신 중 오류가 발생했습니다. ${err}`,
+    };
   }
 };
