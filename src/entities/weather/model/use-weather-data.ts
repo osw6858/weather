@@ -33,19 +33,24 @@ export const useWeatherData = () => {
     currentCoords?.lon,
   );
 
-  // 현재 온도를 포함한 최저/최고 재계산
+  // 알 수 있는 최대 범위의 최저/최고 계산
   const adjustedForecast = useMemo(() => {
     if (!forecastQuery.data || !weatherQuery.data) {
       return forecastQuery.data;
     }
 
     const currentTemp = Math.round(weatherQuery.data.main.temp);
-    const { minTemp, maxTemp } = forecastQuery.data;
+    const weatherMinTemp = Math.round(weatherQuery.data.main.temp_min);
+    const weatherMaxTemp = Math.round(weatherQuery.data.main.temp_max);
+    const { minTemp: forecastMin, maxTemp: forecastMax } = forecastQuery.data;
 
-    const actualMin =
-      minTemp !== null ? Math.min(minTemp, currentTemp) : currentTemp;
-    const actualMax =
-      maxTemp !== null ? Math.max(maxTemp, currentTemp) : currentTemp;
+    // 모든 온도를 고려하여 최대 범위 계산
+    const temps = [currentTemp, weatherMinTemp, weatherMaxTemp];
+    if (forecastMin !== null) temps.push(forecastMin);
+    if (forecastMax !== null) temps.push(forecastMax);
+
+    const actualMin = Math.min(...temps);
+    const actualMax = Math.max(...temps);
 
     return {
       ...forecastQuery.data,
