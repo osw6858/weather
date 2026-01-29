@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useCurrentWeatherQuery, WeatherCard } from '@/entities/weather'; // 경로 별칭 확인
 import { toast } from 'sonner';
 import { useGeolocation } from '@/shared/lib/useGeolocation';
+import { useCurrentLocation } from '@/entities/weather/model/use-current-location';
 
 export const WeatherBoard = () => {
   const [currentCoords, setCurrentCoords] = useState({
@@ -16,6 +17,11 @@ export const WeatherBoard = () => {
     isError,
     error: weatherError,
   } = useCurrentWeatherQuery(currentCoords.lat, currentCoords.lon);
+
+  const { data: currentLocation } = useCurrentLocation(
+    currentCoords.lat,
+    currentCoords.lon,
+  );
 
   useEffect(() => {
     if (geoCoords) {
@@ -55,7 +61,9 @@ export const WeatherBoard = () => {
             </p>
           </div>
         )}
-        {weatherData && <WeatherCard data={weatherData} />}
+        {weatherData && currentLocation && (
+          <WeatherCard data={{ ...weatherData, name: currentLocation }} />
+        )}
       </div>
     </div>
   );

@@ -20,6 +20,7 @@ export const getCurrentWeather = async (
     const result = weatherSchema.safeParse(rawData);
 
     if (!result.success) {
+      console.error('날씨 데이터 파싱 실패:', result.error);
       return {
         status: 'error',
         error: '날씨 데이터 형식이 올바르지 않습니다.',
