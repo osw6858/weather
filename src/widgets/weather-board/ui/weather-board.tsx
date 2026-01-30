@@ -4,11 +4,17 @@ import {
   WeatherCardSkeleton,
   useWeatherData,
 } from '@/entities/weather';
+import { SearchLocation } from '@/features/search-location';
+import { FavoritesGrid, useFavoritesStore } from '@/features/favorites';
 import { toast } from 'sonner';
 
 export const WeatherBoard = () => {
+  const { favorites } = useFavoritesStore();
+
   const { weather, forecast, location, geoError, isLoading, isError } =
     useWeatherData();
+
+  const finalLocationName = location.data || '현재 위치';
 
   useEffect(() => {
     if (geoError) {
@@ -26,29 +32,32 @@ export const WeatherBoard = () => {
   return (
     <div className="flex w-full flex-col items-center gap-8">
       <div className="w-full max-w-sm">
-        <div className="rounded-xl border border-dashed border-white/30 bg-white/10 p-4 text-center text-white/50">
-          지역 검색창 (Features)
-        </div>
+        <SearchLocation />
       </div>
+
       <div className="flex w-full justify-center">
         {isLoading && <WeatherCardSkeleton />}
         {isError && (
-          <div className="text-center text-white">
-            <p>날씨 데이터를 가져오지 못했습니다.</p>
-            <p className="text-sm opacity-70">
-              {weather.error instanceof Error
-                ? weather.error.message
-                : 'Unknown Error'}
+          <div className="rounded-xl bg-white/10 p-8 text-center text-white">
+            <p className="font-semibold">
+              해당 장소의 정보가 제공되지 않습니다.
             </p>
+            <p className="mt-2 text-sm opacity-70">다른 장소를 검색해보세요</p>
           </div>
         )}
-        {!isLoading && weather.data && location.data && (
+        {!isLoading && weather.data && (
           <WeatherCard
-            data={{ ...weather.data, name: location.data }}
+            data={{ ...weather.data, name: finalLocationName }}
             forecast={forecast.data}
           />
         )}
       </div>
+
+      {favorites.length > 0 && (
+        <div className="mt-8 w-full max-w-6xl">
+          <FavoritesGrid />
+        </div>
+      )}
     </div>
   );
 };
