@@ -17,13 +17,13 @@ export const FavoritesGrid = () => {
 
   return (
     <div className="w-full">
-      <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-xl font-semibold">
+      <div className="mb-3 flex items-center justify-between md:mb-4">
+        <h2 className="text-lg font-semibold md:text-xl">
           즐겨찾기 ({favorites.length}/{MAX_FAVORITES})
         </h2>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
         {favorites.map((favorite) => (
           <FavoriteCardWithData key={favorite.id} favorite={favorite} />
         ))}

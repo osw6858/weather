@@ -23,8 +23,8 @@ export const FavoriteCard = ({
   isLoading,
 }: FavoriteCardProps) => {
   return (
-    <div className="relative flex min-h-[240px] flex-col rounded-2xl bg-white p-6 shadow-md transition-shadow hover:shadow-lg">
-      <div className="mb-4">
+    <div className="relative flex min-h-[140px] flex-col rounded-2xl bg-white p-4 shadow-md transition-shadow hover:shadow-lg md:min-h-[240px] md:p-6">
+      <div className="mb-2 md:mb-4">
         <FavoriteCardHeader favoriteId={favorite.id} alias={favorite.alias} />
       </div>
 

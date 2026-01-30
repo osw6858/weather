@@ -71,25 +71,27 @@ export const FavoriteCardHeader = ({
 
   return (
     <div className="flex items-center justify-between gap-2">
-      <h3 className="truncate text-lg font-semibold text-gray-900">{alias}</h3>
-      <div className="flex items-center gap-1">
+      <h3 className="truncate text-base font-semibold text-gray-900 md:text-lg">
+        {alias}
+      </h3>
+      <div className="flex items-center gap-0.5 md:gap-1">
         <Button
           size="sm"
           variant="ghost"
-          className="h-8 w-8 cursor-pointer p-0"
+          className="h-7 w-7 cursor-pointer p-0 md:h-8 md:w-8"
           onClick={() => setIsEditing(true)}
           aria-label="별칭 수정"
         >
-          <Edit2 className="h-4 w-4 cursor-pointer text-gray-400" />
+          <Edit2 className="h-3.5 w-3.5 cursor-pointer text-gray-400 md:h-4 md:w-4" />
         </Button>
         <Button
           size="sm"
           variant="ghost"
-          className="h-8 w-8 cursor-pointer p-0"
+          className="h-7 w-7 cursor-pointer p-0 md:h-8 md:w-8"
           onClick={handleRemoveFavorite}
           aria-label="즐겨찾기 제거"
         >
-          <Star className="h-5 w-5 cursor-pointer fill-yellow-400 text-yellow-400" />
+          <Star className="h-4 w-4 cursor-pointer fill-yellow-400 text-yellow-400 md:h-5 md:w-5" />
         </Button>
       </div>
     </div>

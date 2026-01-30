@@ -20,7 +20,10 @@ export const useGeolocation = () => {
 
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        setCoords({ lat: pos.coords.latitude, lon: pos.coords.longitude });
+        setCoords({
+          lat: Math.round(pos.coords.latitude * 10000) / 10000,
+          lon: Math.round(pos.coords.longitude * 10000) / 10000,
+        });
         setError(null);
         setIsLoading(false);
       },
