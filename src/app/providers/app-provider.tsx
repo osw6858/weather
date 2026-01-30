@@ -3,6 +3,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { BrowserRouter } from 'react-router-dom';
 import { useState } from 'react';
 import { Toaster } from '@/shared/ui/sonner';
+import axios from 'axios';
 
 interface AppProviderProps {
   children: React.ReactNode;
@@ -16,8 +17,16 @@ export function AppProvider({ children }: AppProviderProps) {
           queries: {
             staleTime: 5 * 60 * 1000,
             gcTime: 10 * 60 * 1000,
-            retry: 1,
+            retry: (failureCount, error) => {
+              if (axios.isAxiosError(error) && error.response?.status) {
+                const status = error.response.status;
+                if (status >= 400 && status < 500) return false;
+              }
+              return failureCount < 2;
+            },
             refetchOnWindowFocus: false,
+            refetchOnReconnect: true,
+            networkMode: 'online',
           },
         },
       }),

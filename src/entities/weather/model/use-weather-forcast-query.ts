@@ -24,16 +24,24 @@ export const useWeatherForecastQuery = (lat?: number, lon?: number) => {
       const hourlyHumidity = res.data.hourly.relative_humidity_2m;
       const hourlyWindSpeed = res.data.hourly.wind_speed_10m;
 
-      const todayForecasts: HourForecast[] = hourlyTimes
-        .map((time, index) => ({
-          time,
-          temp_c: hourlyTemps[index],
-          weather_code: hourlyWeatherCodes[index],
-          humidity: hourlyHumidity?.[index],
-          wind_speed: hourlyWindSpeed?.[index],
-        }))
-        .filter((item) => dayjs(item.time).isAfter(now))
-        .slice(0, 8);
+      const todayForecasts: HourForecast[] = [];
+
+      for (
+        let i = 0;
+        i < hourlyTimes.length && todayForecasts.length < 8;
+        i++
+      ) {
+        const time = hourlyTimes[i];
+        if (dayjs(time).isAfter(now)) {
+          todayForecasts.push({
+            time,
+            temp_c: hourlyTemps[i],
+            weather_code: hourlyWeatherCodes[i],
+            humidity: hourlyHumidity?.[i],
+            wind_speed: hourlyWindSpeed?.[i],
+          });
+        }
+      }
 
       return {
         weather: {

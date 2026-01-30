@@ -3,12 +3,6 @@ import { getChoseong } from 'es-hangul';
 import { koreaDistricts } from '@/entities/district';
 import type { UseSearchDistrictsOptions } from './types';
 
-const matchesChosung = (text: string, query: string): boolean => {
-  const textChosung = getChoseong(text);
-  const queryChosung = getChoseong(query);
-  return textChosung.includes(queryChosung);
-};
-
 export const useSearchDistricts = (
   query: string,
   options: UseSearchDistrictsOptions = {},
@@ -16,32 +10,52 @@ export const useSearchDistricts = (
   const { minLength = 1, maxResults = 10 } = options;
 
   const results = useMemo(() => {
-    if (!query || query.trim().length < minLength) {
+    const normalizedQuery = query?.trim() || '';
+
+    if (normalizedQuery.length < minLength) {
       return [];
     }
 
-    const normalizedQuery = query.trim();
     const isChosungOnly = /^[ㄱ-ㅎㅏ-ㅣ\s]+$/.test(normalizedQuery);
 
     if (!isChosungOnly) {
-      const matches = koreaDistricts.filter((district) => {
-        const displayText = district.split('-').join(' ');
-        return displayText.includes(normalizedQuery);
-      });
-      return matches.slice(0, maxResults);
+      const matches: string[] = [];
+      for (const district of koreaDistricts) {
+        if (matches.length >= maxResults) break;
+
+        const displayText = district.replaceAll('-', ' ');
+        if (displayText.includes(normalizedQuery)) {
+          matches.push(district);
+        }
+      }
+      return matches;
     }
 
-    const chosungMatches = koreaDistricts.filter((district) => {
-      const parts = district.split('-');
-      return parts.some((part) => matchesChosung(part, normalizedQuery));
-    });
+    const queryChosung = getChoseong(normalizedQuery);
+    const matches: string[] = [];
 
-    return chosungMatches.slice(0, maxResults);
+    for (const district of koreaDistricts) {
+      if (matches.length >= maxResults) break;
+
+      const parts = district.split('-');
+      const hasMatch = parts.some((part) => {
+        const partChosung = getChoseong(part);
+        return partChosung.includes(queryChosung);
+      });
+
+      if (hasMatch) {
+        matches.push(district);
+      }
+    }
+
+    return matches;
   }, [query, minLength, maxResults]);
+
+  const normalizedQuery = query?.trim() || '';
 
   return {
     results,
     count: results.length,
-    isEmpty: results.length === 0 && query.trim().length >= minLength,
+    isEmpty: results.length === 0 && normalizedQuery.length >= minLength,
   };
 };
