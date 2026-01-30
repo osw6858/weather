@@ -15,15 +15,20 @@ interface UseWeatherDataParams {
 }
 
 export const useWeatherData = (params?: UseWeatherDataParams) => {
-  const { coords: geoCoords, error: geoError } = useGeolocation();
+  const {
+    coords: geoCoords,
+    error: geoError,
+    isLoading: geoLoading,
+  } = useGeolocation();
 
   const currentCoords = useMemo(() => {
     if (params?.lat && params?.lon) {
       return { lat: params.lat, lon: params.lon };
     }
-    if (geoCoords) return geoCoords;
-    return DEFAULT_COORDS;
-  }, [params, geoCoords]);
+    if (geoLoading) return null;
+    if (!geoLoading && !geoCoords) return DEFAULT_COORDS;
+    return geoCoords;
+  }, [params, geoCoords, geoLoading]);
 
   const weatherQuery = useCurrentWeatherQuery(
     currentCoords?.lat,

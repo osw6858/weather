@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 export const useGeolocation = () => {
   const [coords, setCoords] = useState<{ lat: number; lon: number } | null>(
@@ -7,61 +7,47 @@ export const useGeolocation = () => {
   const [error, setError] = useState<GeolocationPositionError | string | null>(
     null,
   );
-  const watchIdRef = useRef<number | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const startWatching = useCallback(() => {
+  const getPosition = useCallback(() => {
     if (!navigator.geolocation) {
       setError('지원하지 않는 브라우저');
+      setIsLoading(false);
       return;
     }
 
-    if (watchIdRef.current !== null) {
-      navigator.geolocation.clearWatch(watchIdRef.current);
-    }
+    setIsLoading(true);
 
-    watchIdRef.current = navigator.geolocation.watchPosition(
+    navigator.geolocation.getCurrentPosition(
       (pos) => {
         setCoords({ lat: pos.coords.latitude, lon: pos.coords.longitude });
         setError(null);
+        setIsLoading(false);
       },
-      (err) => setError(err),
+      (err) => {
+        setError(err);
+        setIsLoading(false);
+      },
       { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 },
     );
   }, []);
 
   useEffect(() => {
-    if (!navigator.geolocation) {
-      console.error('지원하지 않는 브라우저');
-      return;
-    }
-
-    watchIdRef.current = navigator.geolocation.watchPosition(
-      (pos) => {
-        setCoords({ lat: pos.coords.latitude, lon: pos.coords.longitude });
-        setError(null);
-      },
-      (err) => setError(err),
-      { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 },
-    );
-
-    return () => {
-      if (watchIdRef.current !== null) {
-        navigator.geolocation.clearWatch(watchIdRef.current);
-      }
-    };
-  }, []);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    getPosition();
+  }, [getPosition]);
 
   useEffect(() => {
     if ('permissions' in navigator) {
       navigator.permissions.query({ name: 'geolocation' }).then((result) => {
         result.onchange = () => {
           if (result.state === 'granted') {
-            startWatching();
+            getPosition();
           }
         };
       });
     }
-  }, [startWatching]);
+  }, [getPosition]);
 
-  return { coords, error, refetch: startWatching };
+  return { coords, error, isLoading, refetch: getPosition };
 };
