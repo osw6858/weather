@@ -1,6 +1,7 @@
 import { Star } from 'lucide-react';
 import { formatDistrict } from '@/entities/district';
 import type { District } from '@/entities/district';
+import { Button } from '@/shared/ui';
 import { useSearchItemActions } from '../model';
 
 interface SearchResultItemProps {
@@ -27,13 +28,14 @@ export const SearchResultItem = ({ district }: SearchResultItemProps) => {
         <p className="text-sm text-gray-500">{levelText}</p>
       </div>
 
-      <button
+      <Button
         onClick={(e) => {
           e.stopPropagation();
           handleToggleFavorite(district);
         }}
-        className="ml-4 rounded p-1 transition-colors hover:bg-gray-100"
+        className="ml-4 cursor-pointer rounded p-1 transition-colors hover:bg-gray-100"
         aria-label={isStarred ? '즐겨찾기 제거' : '즐겨찾기 추가'}
+        variant="ghost"
       >
         <Star
           className={`h-5 w-5 transition-colors ${
@@ -42,7 +44,7 @@ export const SearchResultItem = ({ district }: SearchResultItemProps) => {
               : 'text-gray-300 group-hover:text-gray-400'
           }`}
         />
-      </button>
+      </Button>
     </div>
   );
 };

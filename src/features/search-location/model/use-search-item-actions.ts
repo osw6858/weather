@@ -5,7 +5,8 @@ import type { District } from '@/entities/district';
 
 export const useSearchItemActions = () => {
   const navigate = useNavigate();
-  const { addFavorite, isFavorite } = useFavoritesStore();
+  const { addFavorite, isFavorite, removeFavorite, getFavoriteByDistrict } =
+    useFavoritesStore();
 
   const handleSelect = (district: District) => {
     navigate(`/detail/${encodeURIComponent(district)}`);
@@ -13,6 +14,11 @@ export const useSearchItemActions = () => {
 
   const handleToggleFavorite = (district: District) => {
     if (isFavorite(district)) {
+      const favorite = getFavoriteByDistrict(district);
+      if (favorite) {
+        removeFavorite(favorite.id);
+        toast.success('즐겨찾기에서 제거되었습니다');
+      }
       return;
     }
 

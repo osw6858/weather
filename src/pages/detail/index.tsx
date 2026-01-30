@@ -6,6 +6,7 @@ import {
   useCoordsByAddressQuery,
   useWeatherDataByCoords,
 } from '@/entities/weather';
+import { ArrowLeft } from 'lucide-react';
 
 export const DetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -38,11 +39,13 @@ export const DetailPage = () => {
         <div className="mb-8 flex items-center justify-between">
           <Button
             variant="outline"
-            className="hover:bg-white/10"
+            className="rounded-full border-none bg-transparent shadow-none hover:bg-slate-200"
             size="sm"
             asChild
           >
-            <Link to="/">메인으로</Link>
+            <Link to="/">
+              <ArrowLeft />
+            </Link>
           </Button>
         </div>
 
