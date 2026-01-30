@@ -1,23 +1,26 @@
 import { useState } from 'react';
-import { Edit2, Check, X } from 'lucide-react';
+import { Edit2, Check, X, Star } from 'lucide-react';
 import { Input } from '@/shared/ui/input';
 import { Button } from '@/shared/ui/button';
+import { useFavoritesStore } from '../model';
 
 interface FavoriteCardHeaderProps {
+  favoriteId: string;
   alias: string;
-  onUpdateAlias: (alias: string) => void;
 }
 
 export const FavoriteCardHeader = ({
+  favoriteId,
   alias,
-  onUpdateAlias,
 }: FavoriteCardHeaderProps) => {
+  const { updateAlias, removeFavorite } = useFavoritesStore();
+
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(alias);
 
   const handleSave = () => {
     if (editValue.trim()) {
-      onUpdateAlias(editValue.trim());
+      updateAlias(favoriteId, editValue.trim());
       setIsEditing(false);
     }
   };
@@ -64,13 +67,26 @@ export const FavoriteCardHeader = ({
   return (
     <div className="flex items-center justify-between gap-2">
       <h3 className="truncate text-lg font-semibold text-gray-900">{alias}</h3>
-      <button
-        onClick={() => setIsEditing(true)}
-        className="rounded p-1.5 transition-colors hover:bg-gray-100"
-        aria-label="별칭 수정"
-      >
-        <Edit2 className="h-4 w-4 text-gray-400" />
-      </button>
+      <div className="flex items-center gap-1">
+        <Button
+          size="sm"
+          variant="ghost"
+          className="h-8 w-8 p-0"
+          onClick={() => setIsEditing(true)}
+          aria-label="별칭 수정"
+        >
+          <Edit2 className="h-4 w-4 cursor-pointer text-gray-400" />
+        </Button>
+        <Button
+          size="sm"
+          variant="ghost"
+          className="h-8 w-8 p-0"
+          onClick={() => removeFavorite(favoriteId)}
+          aria-label="즐겨찾기 제거"
+        >
+          <Star className="h-5 w-5 cursor-pointer fill-yellow-400 text-yellow-400" />
+        </Button>
+      </div>
     </div>
   );
 };

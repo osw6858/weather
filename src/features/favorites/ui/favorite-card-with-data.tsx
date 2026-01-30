@@ -5,17 +5,14 @@ import type { FavoriteLocation } from '../model/types';
 
 interface FavoriteCardWithDataProps {
   favorite: FavoriteLocation;
-  onRemove: (id: string) => void;
-  onUpdateAlias: (id: string, alias: string) => void;
 }
 
 export const FavoriteCardWithData = ({
   favorite,
-  onRemove,
-  onUpdateAlias,
 }: FavoriteCardWithDataProps) => {
   const address = favorite.district.split('-').join(' ');
-  const { data: coords, isLoading: coordsLoading } = useCoordsByAddressQuery(address);
+  const { data: coords, isLoading: coordsLoading } =
+    useCoordsByAddressQuery(address);
 
   const { weather, forecast } = useWeatherData({
     lat: coords?.lat,
@@ -30,7 +27,8 @@ export const FavoriteCardWithData = ({
         minTemp: forecast.data?.minTemp,
         maxTemp: forecast.data?.maxTemp,
         iconCode: getWeatherInfo(weather.data.current.weather_code).icon,
-        description: getWeatherInfo(weather.data.current.weather_code).description,
+        description: getWeatherInfo(weather.data.current.weather_code)
+          .description,
       }
     : undefined;
 
@@ -39,8 +37,6 @@ export const FavoriteCardWithData = ({
       favorite={favorite}
       weather={weatherData}
       isLoading={isLoading}
-      onRemove={onRemove}
-      onUpdateAlias={onUpdateAlias}
     />
   );
 };

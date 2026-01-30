@@ -2,7 +2,7 @@ import { FavoriteCardWithData } from './favorite-card-with-data';
 import { useFavoritesStore, MAX_FAVORITES } from '../model';
 
 export const FavoritesGrid = () => {
-  const { favorites, removeFavorite, updateAlias } = useFavoritesStore();
+  const { favorites } = useFavoritesStore();
 
   if (favorites.length === 0) {
     return (
@@ -18,19 +18,14 @@ export const FavoritesGrid = () => {
   return (
     <div className="w-full">
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-white">
+        <h2 className="text-xl font-semibold">
           즐겨찾기 ({favorites.length}/{MAX_FAVORITES})
         </h2>
       </div>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {favorites.map((favorite) => (
-          <FavoriteCardWithData
-            key={favorite.id}
-            favorite={favorite}
-            onRemove={removeFavorite}
-            onUpdateAlias={updateAlias}
-          />
+          <FavoriteCardWithData key={favorite.id} favorite={favorite} />
         ))}
       </div>
     </div>
