@@ -5,6 +5,7 @@ import {
   getWeatherInfo,
 } from '@/entities/weather';
 import type { FavoriteLocation } from '../model/types';
+import { formatDistrict } from '@/entities/district';
 
 interface FavoriteCardWithDataProps {
   favorite: FavoriteLocation;
@@ -13,7 +14,7 @@ interface FavoriteCardWithDataProps {
 export const FavoriteCardWithData = ({
   favorite,
 }: FavoriteCardWithDataProps) => {
-  const address = favorite.district.split('-').join(' ');
+  const address = formatDistrict(favorite.district);
   const { data: coords, isLoading: coordsLoading } =
     useCoordsByAddressQuery(address);
 

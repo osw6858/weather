@@ -7,7 +7,7 @@ export const useWeatherForecastQuery = (lat?: number, lon?: number) => {
   return useQuery({
     queryKey: ['weatherForecast', lat, lon],
     queryFn: async () => {
-      const res = await getWeatherForecast(lat!, lon!);
+      const res = await getWeatherForecast(lat, lon);
 
       if (res.status === 'error') {
         throw new Error(res.error);

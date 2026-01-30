@@ -1,15 +1,5 @@
 import { z } from 'zod';
 
-// Kakao API
-
-export const coordsSchema = z.object({
-  name: z.string(),
-  lat: z.number(),
-  lon: z.number(),
-  country: z.string(),
-  state: z.string().optional(),
-});
-
 export const simpleCoordsSchema = z.object({
   lat: z.number(),
   lon: z.number(),
@@ -23,32 +13,6 @@ export const KakaoAddressSearchSchema = z.object({
       address_name: z.string(),
       x: z.string(),
       y: z.string(),
-    }),
-  ),
-  meta: z.object({
-    total_count: z.number(),
-  }),
-});
-
-export const kakaoAddressSchema = z.object({
-  documents: z.array(
-    z.object({
-      address: z
-        .object({
-          address_name: z.string(),
-          region_1depth_name: z.string(),
-          region_2depth_name: z.string(),
-          region_3depth_name: z.string(),
-        })
-        .optional(),
-      road_address: z
-        .object({
-          address_name: z.string(),
-          region_1depth_name: z.string(),
-          region_2depth_name: z.string(),
-          region_3depth_name: z.string(),
-        })
-        .optional(),
     }),
   ),
   meta: z.object({
@@ -90,8 +54,6 @@ export const KakaoCoord2AddressResponseSchema = z.object({
 export type KakaoCoord2AddressResult = z.infer<
   typeof KakaoCoord2AddressResponseSchema
 >;
-
-export type Coords = z.infer<typeof coordsSchema>;
 
 // Open-Meteo API
 
@@ -142,9 +104,5 @@ export const weatherForecastSchema = z.object({
   hourly: hourlyForecastSchema,
 });
 
-// Zod 스키마에서 추론된 타입들
 export type Weather = z.infer<typeof weatherSchema>;
 export type WeatherForecast = z.infer<typeof weatherForecastSchema>;
-export type CurrentWeather = z.infer<typeof currentWeatherSchema>;
-export type DailyForecast = z.infer<typeof dailyForecastSchema>;
-export type HourlyForecast = z.infer<typeof hourlyForecastSchema>;

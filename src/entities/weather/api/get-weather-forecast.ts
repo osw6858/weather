@@ -2,9 +2,16 @@ import { weatherApi, type ApiResult } from '@/shared/api';
 import { weatherForecastSchema, type WeatherForecast } from '../model';
 
 export const getWeatherForecast = async (
-  lat: number,
-  lon: number,
+  lat?: number,
+  lon?: number,
 ): Promise<ApiResult<WeatherForecast>> => {
+  if (!lat || !lon) {
+    return {
+      status: 'error',
+      error: '위치 정보를 가져올 수 없어요',
+    };
+  }
+
   try {
     const { data: rawData } = await weatherApi.get('/forecast', {
       params: {

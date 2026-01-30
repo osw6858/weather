@@ -49,16 +49,10 @@ export const FavoriteCardHeader = ({
           autoFocus
           maxLength={20}
         />
-        <Button
-          size="sm"
-          variant="ghost"
-          className="h-10 w-10 p-0"
-          onClick={handleSave}
-        >
+        <Button variant="ghost" className="h-10 w-10 p-0" type="submit">
           <Check className="h-5 w-5 text-green-600" />
         </Button>
         <Button
-          size="sm"
           variant="ghost"
           className="h-10 w-10 p-0"
           onClick={handleCancel}

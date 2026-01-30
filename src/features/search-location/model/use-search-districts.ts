@@ -8,10 +8,10 @@ export const useSearchDistricts = (
   options: UseSearchDistrictsOptions = {},
 ) => {
   const { minLength = 1, maxResults = 10 } = options;
+  const normalizedQuery = query?.trim() || '';
 
+  // TODO: 10개가 넘어가면 break를 걸고 있지만 결과를 더 많이 반환하게 된다면 webworker로 처리하는 것이 좋을 수 있음
   const results = useMemo(() => {
-    const normalizedQuery = query?.trim() || '';
-
     if (normalizedQuery.length < minLength) {
       return [];
     }
@@ -31,7 +31,7 @@ export const useSearchDistricts = (
       return matches;
     }
 
-    const queryChosung = getChoseong(normalizedQuery);
+    const queryChosung = normalizedQuery;
     const matches: string[] = [];
 
     for (const district of koreaDistricts) {
@@ -49,9 +49,7 @@ export const useSearchDistricts = (
     }
 
     return matches;
-  }, [query, minLength, maxResults]);
-
-  const normalizedQuery = query?.trim() || '';
+  }, [normalizedQuery, minLength, maxResults]);
 
   return {
     results,

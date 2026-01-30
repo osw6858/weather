@@ -5,12 +5,10 @@ import {
   useCurrentWeatherData,
 } from '@/entities/weather';
 import { SearchLocation } from '@/features/search-location';
-import { FavoritesGrid, useFavoritesStore } from '@/features/favorites';
+import { FavoritesGrid } from '@/features/favorites';
 import { toast } from 'sonner';
 
 export const WeatherBoard = () => {
-  const { favorites } = useFavoritesStore();
-
   const { weather, forecast, location, geoError, isLoading, isError } =
     useCurrentWeatherData();
 
@@ -53,11 +51,7 @@ export const WeatherBoard = () => {
         )}
       </div>
 
-      {favorites.length > 0 && (
-        <div className="mt-8 w-full max-w-6xl">
-          <FavoritesGrid />
-        </div>
-      )}
+      <FavoritesGrid />
     </div>
   );
 };
