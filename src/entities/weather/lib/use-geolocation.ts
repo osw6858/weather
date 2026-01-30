@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
 export const useGeolocation = () => {
   const [coords, setCoords] = useState<{ lat: number; lon: number } | null>(
@@ -7,21 +7,61 @@ export const useGeolocation = () => {
   const [error, setError] = useState<GeolocationPositionError | string | null>(
     null,
   );
+  const watchIdRef = useRef<number | null>(null);
 
-  useEffect(() => {
+  const startWatching = useCallback(() => {
     if (!navigator.geolocation) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setError('지원하지 않는 브라우저');
       return;
     }
 
-    navigator.geolocation.getCurrentPosition(
-      (pos) =>
-        setCoords({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
+    if (watchIdRef.current !== null) {
+      navigator.geolocation.clearWatch(watchIdRef.current);
+    }
+
+    watchIdRef.current = navigator.geolocation.watchPosition(
+      (pos) => {
+        setCoords({ lat: pos.coords.latitude, lon: pos.coords.longitude });
+        setError(null);
+      },
       (err) => setError(err),
       { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 },
     );
   }, []);
 
-  return { coords, error };
+  useEffect(() => {
+    if (!navigator.geolocation) {
+      console.error('지원하지 않는 브라우저');
+      return;
+    }
+
+    watchIdRef.current = navigator.geolocation.watchPosition(
+      (pos) => {
+        setCoords({ lat: pos.coords.latitude, lon: pos.coords.longitude });
+        setError(null);
+      },
+      (err) => setError(err),
+      { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 },
+    );
+
+    return () => {
+      if (watchIdRef.current !== null) {
+        navigator.geolocation.clearWatch(watchIdRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if ('permissions' in navigator) {
+      navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+        result.onchange = () => {
+          if (result.state === 'granted') {
+            startWatching();
+          }
+        };
+      });
+    }
+  }, [startWatching]);
+
+  return { coords, error, refetch: startWatching };
 };

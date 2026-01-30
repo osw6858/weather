@@ -22,9 +22,8 @@ export const useWeatherData = (params?: UseWeatherDataParams) => {
       return { lat: params.lat, lon: params.lon };
     }
     if (geoCoords) return geoCoords;
-    if (geoError) return DEFAULT_COORDS;
-    return null;
-  }, [params, geoCoords, geoError]);
+    return DEFAULT_COORDS;
+  }, [params, geoCoords]);
 
   const weatherQuery = useCurrentWeatherQuery(
     currentCoords?.lat,
