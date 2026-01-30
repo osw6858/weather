@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import {
   WeatherCard,
   WeatherCardSkeleton,
-  useWeatherData,
+  useCurrentWeatherData,
 } from '@/entities/weather';
 import { SearchLocation } from '@/features/search-location';
 import { FavoritesGrid, useFavoritesStore } from '@/features/favorites';
@@ -12,7 +12,7 @@ export const WeatherBoard = () => {
   const { favorites } = useFavoritesStore();
 
   const { weather, forecast, location, geoError, isLoading, isError } =
-    useWeatherData();
+    useCurrentWeatherData();
 
   const finalLocationName = location.data || '현재 위치';
 

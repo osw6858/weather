@@ -4,7 +4,7 @@ import {
   WeatherCard,
   WeatherCardSkeleton,
   useCoordsByAddressQuery,
-  useWeatherData,
+  useWeatherDataByCoords,
 } from '@/entities/weather';
 
 export const DetailPage = () => {
@@ -19,10 +19,10 @@ export const DetailPage = () => {
     isError: coordsError,
   } = useCoordsByAddressQuery(address);
 
-  const { weather, forecast } = useWeatherData({
-    lat: coords?.lat,
-    lon: coords?.lon,
-  });
+  const { weather, forecast } = useWeatherDataByCoords(
+    coords?.lat,
+    coords?.lon,
+  );
 
   if (!id) {
     return <Navigate to="/" replace />;

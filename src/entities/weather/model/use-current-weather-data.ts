@@ -9,12 +9,7 @@ const DEFAULT_COORDS = {
   lon: 126.978,
 };
 
-interface UseWeatherDataParams {
-  lat?: number;
-  lon?: number;
-}
-
-export const useWeatherData = (params?: UseWeatherDataParams) => {
+export const useCurrentWeatherData = () => {
   const {
     coords: geoCoords,
     error: geoError,
@@ -22,13 +17,10 @@ export const useWeatherData = (params?: UseWeatherDataParams) => {
   } = useGeolocation();
 
   const currentCoords = useMemo(() => {
-    if (params?.lat && params?.lon) {
-      return { lat: params.lat, lon: params.lon };
-    }
     if (geoLoading) return null;
-    if (!geoLoading && !geoCoords) return DEFAULT_COORDS;
+    if (!geoCoords) return DEFAULT_COORDS;
     return geoCoords;
-  }, [params, geoCoords, geoLoading]);
+  }, [geoCoords, geoLoading]);
 
   const weatherQuery = useCurrentWeatherQuery(
     currentCoords?.lat,
@@ -49,22 +41,23 @@ export const useWeatherData = (params?: UseWeatherDataParams) => {
     coords: currentCoords,
     weather: {
       data: weatherQuery.data,
-      isLoading: weatherQuery.isLoading,
+      isLoading: weatherQuery.isLoading || geoLoading,
       isError: weatherQuery.isError,
       error: weatherQuery.error,
     },
     forecast: {
       data: forecastQuery.data,
-      isLoading: forecastQuery.isLoading,
+      isLoading: forecastQuery.isLoading || geoLoading,
       isError: forecastQuery.isError,
     },
     location: {
       data: locationQuery.data,
-      isLoading: locationQuery.isLoading,
+      isLoading: locationQuery.isLoading || geoLoading,
       isError: locationQuery.isError,
     },
     geoError,
     isLoading:
+      geoLoading ||
       weatherQuery.isLoading ||
       forecastQuery.isLoading ||
       locationQuery.isLoading,
@@ -72,3 +65,4 @@ export const useWeatherData = (params?: UseWeatherDataParams) => {
       weatherQuery.isError || forecastQuery.isError || locationQuery.isError,
   };
 };
+

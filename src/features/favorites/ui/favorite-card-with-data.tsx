@@ -1,5 +1,8 @@
 import { FavoriteCard } from './favorite-card';
-import { useCoordsByAddressQuery, useWeatherData } from '@/entities/weather';
+import {
+  useCoordsByAddressQuery,
+  useWeatherDataByCoords,
+} from '@/entities/weather';
 import { getWeatherInfo } from '@/entities/weather/model/schema';
 import type { FavoriteLocation } from '../model/types';
 
@@ -14,10 +17,10 @@ export const FavoriteCardWithData = ({
   const { data: coords, isLoading: coordsLoading } =
     useCoordsByAddressQuery(address);
 
-  const { weather, forecast } = useWeatherData({
-    lat: coords?.lat,
-    lon: coords?.lon,
-  });
+  const { weather, forecast } = useWeatherDataByCoords(
+    coords?.lat,
+    coords?.lon,
+  );
 
   const isLoading = coordsLoading || weather.isLoading || forecast.isLoading;
 
