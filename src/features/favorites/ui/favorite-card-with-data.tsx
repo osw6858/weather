@@ -1,9 +1,9 @@
 import { FavoriteCard } from './favorite-card';
 import {
   useCoordsByAddressQuery,
-  useWeatherDataByCoords,
+  useWeatherForecastQuery,
+  getWeatherInfo,
 } from '@/entities/weather';
-import { getWeatherInfo } from '@/entities/weather/model/schema';
 import type { FavoriteLocation } from '../model/types';
 
 interface FavoriteCardWithDataProps {
@@ -17,20 +17,19 @@ export const FavoriteCardWithData = ({
   const { data: coords, isLoading: coordsLoading } =
     useCoordsByAddressQuery(address);
 
-  const { weather, forecast } = useWeatherDataByCoords(
-    coords?.lat,
-    coords?.lon,
-  );
+  const { data: forecastData, isLoading: forecastLoading } =
+    useWeatherForecastQuery(coords?.lat, coords?.lon);
 
-  const isLoading = coordsLoading || weather.isLoading || forecast.isLoading;
+  const isLoading = coordsLoading || forecastLoading;
 
-  const weatherData = weather.data
+  const weatherData = forecastData?.weather
     ? {
-        currentTemp: Math.round(weather.data.current.temperature_2m),
-        minTemp: forecast.data?.minTemp,
-        maxTemp: forecast.data?.maxTemp,
-        iconCode: getWeatherInfo(weather.data.current.weather_code).icon,
-        description: getWeatherInfo(weather.data.current.weather_code)
+        currentTemp: Math.round(forecastData.weather.current.temperature_2m),
+        minTemp: forecastData.minTemp,
+        maxTemp: forecastData.maxTemp,
+        iconCode: getWeatherInfo(forecastData.weather.current.weather_code)
+          .icon,
+        description: getWeatherInfo(forecastData.weather.current.weather_code)
           .description,
       }
     : undefined;

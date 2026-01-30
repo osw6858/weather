@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { getWeatherForecast } from '../api/get-weather-forecast';
-import type { HourForecast } from './schema';
+import type { HourForecast } from './types';
 
 export const useWeatherForecastQuery = (lat?: number, lon?: number) => {
   return useQuery({
@@ -36,6 +36,14 @@ export const useWeatherForecastQuery = (lat?: number, lon?: number) => {
         .slice(0, 8);
 
       return {
+        weather: {
+          latitude: res.data.latitude,
+          longitude: res.data.longitude,
+          timezone: res.data.timezone,
+          timezone_abbreviation: res.data.timezone_abbreviation,
+          elevation: res.data.elevation,
+          current: res.data.current,
+        },
         todayForecasts,
         minTemp,
         maxTemp,

@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import { useGeolocation } from '../lib/use-geolocation';
-import { useCurrentWeatherQuery } from './use-current-weather-query';
 import { useWeatherForecastQuery } from './use-weather-forcast-query';
 import { useCurrentLocation } from './use-current-location';
 
@@ -22,11 +21,6 @@ export const useCurrentWeatherData = () => {
     return geoCoords;
   }, [geoCoords, geoLoading]);
 
-  const weatherQuery = useCurrentWeatherQuery(
-    currentCoords?.lat,
-    currentCoords?.lon,
-  );
-
   const forecastQuery = useWeatherForecastQuery(
     currentCoords?.lat,
     currentCoords?.lon,
@@ -40,10 +34,10 @@ export const useCurrentWeatherData = () => {
   return {
     coords: currentCoords,
     weather: {
-      data: weatherQuery.data,
-      isLoading: weatherQuery.isLoading || geoLoading,
-      isError: weatherQuery.isError,
-      error: weatherQuery.error,
+      data: forecastQuery.data?.weather,
+      isLoading: forecastQuery.isLoading || geoLoading,
+      isError: forecastQuery.isError,
+      error: forecastQuery.error,
     },
     forecast: {
       data: forecastQuery.data,
@@ -56,13 +50,7 @@ export const useCurrentWeatherData = () => {
       isError: locationQuery.isError,
     },
     geoError,
-    isLoading:
-      geoLoading ||
-      weatherQuery.isLoading ||
-      forecastQuery.isLoading ||
-      locationQuery.isLoading,
-    isError:
-      weatherQuery.isError || forecastQuery.isError || locationQuery.isError,
+    isLoading: geoLoading || forecastQuery.isLoading || locationQuery.isLoading,
+    isError: forecastQuery.isError || locationQuery.isError,
   };
 };
-

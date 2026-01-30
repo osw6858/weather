@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { getWeatherInfo } from '../../model/schema';
+import { getWeatherInfo } from '../../model';
 import type { HourForecast } from '../../model';
 
 interface HourlyForecastProps {

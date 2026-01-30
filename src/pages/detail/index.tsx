@@ -4,7 +4,7 @@ import {
   WeatherCard,
   WeatherCardSkeleton,
   useCoordsByAddressQuery,
-  useWeatherDataByCoords,
+  useWeatherForecastQuery,
 } from '@/entities/weather';
 import { ArrowLeft } from 'lucide-react';
 
@@ -20,17 +20,18 @@ export const DetailPage = () => {
     isError: coordsError,
   } = useCoordsByAddressQuery(address);
 
-  const { weather, forecast } = useWeatherDataByCoords(
-    coords?.lat,
-    coords?.lon,
-  );
+  const {
+    data: weatherData,
+    isLoading: weatherLoading,
+    isError: weatherError,
+  } = useWeatherForecastQuery(coords?.lat, coords?.lon);
 
   if (!id) {
     return <Navigate to="/" replace />;
   }
 
-  const isLoading = coordsLoading || weather.isLoading || forecast.isLoading;
-  const isError = coordsError || weather.isError || forecast.isError;
+  const isLoading = coordsLoading || weatherLoading;
+  const isError = coordsError || weatherError;
   const displayName = address;
 
   return (
@@ -71,10 +72,10 @@ export const DetailPage = () => {
             </div>
           )}
 
-          {!isLoading && weather.data && !coordsError && (
+          {!isLoading && weatherData?.weather && !coordsError && (
             <WeatherCard
-              data={{ ...weather.data, name: displayName }}
-              forecast={forecast.data}
+              data={{ ...weatherData.weather, name: displayName }}
+              forecast={weatherData}
               maxForecastItems={6}
             />
           )}

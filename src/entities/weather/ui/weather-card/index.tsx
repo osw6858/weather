@@ -3,7 +3,7 @@ import { WeatherHeader } from './weather-header';
 import { CurrentTemperature } from './current-temperature';
 import { WeatherDetails } from './weather-details';
 import { HourlyForecast } from './hourly-forecast';
-import { getWeatherInfo } from '../../model/schema';
+import { getWeatherInfo } from '../../model';
 import type { WeatherCardProps } from './types';
 import type { HTMLAttributes } from 'react';
 

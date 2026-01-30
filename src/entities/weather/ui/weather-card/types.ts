@@ -1,4 +1,5 @@
-import type { Weather, HourForecast } from '../../model';
+import type { Weather } from '../../model/schema';
+import type { HourForecast } from '../../model/types';
 
 export interface ForecastData {
   todayForecasts: HourForecast[];
