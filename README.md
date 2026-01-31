@@ -3,6 +3,8 @@
 
 # Sky Cast - 날씨 애플리케이션
 
+> 🔗 **배포 URL:** https://weather-pearl-three-65.vercel.app
+
 실시간 날씨 정보 조회와 즐겨찾기 관리 기능을 제공하는 날씨 애플리케이션입니다.
 
 ---
